@@ -1,3 +1,35 @@
+/*
+
+    Adobe AEM Brightcove Connector
+
+    Copyright (C) 2017 Coresecure Inc.
+
+    Authors:    Alessandro Bonfatti
+                Yan Kisen
+                Pablo Kropilnicki
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+    - Additional permission under GNU GPL version 3 section 7
+    If you modify this Program, or any covered work, by linking or combining
+    it with httpclient 4.1.3, httpcore 4.1.4, httpmine 4.1.3, jsoup 1.7.2,
+    squeakysand-commons and squeakysand-osgi (or a modified version of those
+    libraries), containing parts covered by the terms of APACHE LICENSE 2.0
+    or MIT License, the licensors of this Program grant you additional
+    permission to convey the resulting work.
+
+ */
 package com.coresecure.brightcove.wrapper.objects;
 
 
@@ -23,6 +55,7 @@ public class Text_track {
     public String kind;
     public String mime_type;
     public String asset_id;
+    public Boolean _default;
     public JSONArray sources;
 
 
@@ -44,6 +77,7 @@ public class Text_track {
             if(!aText_track.isNull("mime_type"))mime_type = aText_track.getString("mime_type");
             if(!aText_track.isNull("asset_id"))asset_id = aText_track.getString("asset_id");
             if(!aText_track.isNull("sources"))sources = aText_track.getJSONArray("sources");
+            if(!aText_track.isNull("default"))_default = aText_track.getBoolean("default");
 
         }
         catch (JSONException e)
@@ -61,7 +95,7 @@ public class Text_track {
     public JSONObject toJSON() throws JSONException
     {
 
-        JSONObject json = ObjectSerializer.toJSON(this, new String[]{"id", "account_id" , "src", "srclang", "label","kind","mime_type","asset_id","sources"});
+        JSONObject json = ObjectSerializer.toJSON(this, new String[]{"id", "account_id" , "src", "srclang", "label","kind","mime_type","asset_id","sources", "_default"});
 
 
 
@@ -75,7 +109,7 @@ public class Text_track {
         try {
             return toJSON().toString();
         } catch (JSONException e) {
-            // TODO Auto-generated catch block
+            LOGGER.error("JsonException",e);
             return null;
         }
     }

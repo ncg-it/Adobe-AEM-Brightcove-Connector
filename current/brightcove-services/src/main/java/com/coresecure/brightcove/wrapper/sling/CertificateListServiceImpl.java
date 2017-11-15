@@ -1,3 +1,35 @@
+/*
+
+    Adobe AEM Brightcove Connector
+
+    Copyright (C) 2017 Coresecure Inc.
+
+    Authors:    Alessandro Bonfatti
+                Yan Kisen
+                Pablo Kropilnicki
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+    - Additional permission under GNU GPL version 3 section 7
+    If you modify this Program, or any covered work, by linking or combining
+    it with httpclient 4.1.3, httpcore 4.1.4, httpmine 4.1.3, jsoup 1.7.2,
+    squeakysand-commons and squeakysand-osgi (or a modified version of those
+    libraries), containing parts covered by the terms of APACHE LICENSE 2.0
+    or MIT License, the licensors of this Program grant you additional
+    permission to convey the resulting work.
+
+ */
 package com.coresecure.brightcove.wrapper.sling;
 
 import org.apache.felix.scr.annotations.*;
@@ -12,10 +44,10 @@ import java.util.*;
 @Service(value = CertificateListService.class)
 @Properties({
 		@Property(name = "certificate_paths", label = "Certificate Path Mappings", description = "Certificate path mapping for different urls, should be like url:::certificate path", value = {
-				"https://players.api.brightcove.com/v1:::D:/cert/players_api.cer",
-				"https://cms.api.brightcove.com/v1beta1:::D:/cert/cms_api.cer",
+				"https://players.api.brightcove.com/v2:::D:/cert/players_api.cer",
+				"https://cms.api.brightcove.com/v1:::D:/cert/cms_api.cer",
 				"https://ingest.api.brightcove.com/v1:::D:/cert/ingest_api.cer",
-				"https://oauth.brightcove.com/v3/access_token:::D:/cert/oath_brightcove.cer" }),
+				"https://oauth.brightcove.com/v4/access_token:::D:/cert/oath_brightcove.cer" }),
 		@Property(name = "enable-trusted-certificate", label = "Enable Trusted Certificate", description = "To Enable Enable Trusted Certificate, Value should be YES else NO", value = { "YES" }) })
 /**
  * This class is used to get the certificate per domain. These certificate
