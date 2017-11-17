@@ -35,13 +35,17 @@ package com.coresecure.brightcove.wrapper.utils;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
+import java.net.ProtocolException;
 import java.net.Proxy;
 import java.net.URL;
 import java.net.URLConnection;
+import java.security.AccessController;
 import java.security.KeyManagementException;
 import java.security.KeyStore;
 import java.security.KeyStoreException;
 import java.security.NoSuchAlgorithmException;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.security.cert.Certificate;
 import java.security.cert.CertificateException;
 import java.security.cert.CertificateFactory;
@@ -70,7 +74,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.coresecure.brightcove.wrapper.sling.CertificateListService;
-import sun.net.www.protocol.https.HttpsURLConnectionImpl;
 
 public class HttpServices {
     private static Proxy PROXY = Proxy.NO_PROXY;
@@ -247,6 +250,83 @@ public class HttpServices {
 
         return exPostResponse;
     }
+    
+    
+	 /**
+     * Workaround for a bug in {@code HttpURLConnection.setRequestMethod(String)}
+     * The implementation of Sun/Oracle is throwing a {@code ProtocolException}
+     * when the method is other than the HTTP/1.1 default methods. So to use {@code PATCH}
+     * and others, we must apply this workaround.
+     *
+     * See issue http://java.net/jira/browse/JERSEY-639
+     */
+    private static void setRequestMethodViaJreBugWorkaround(final HttpURLConnection httpURLConnection, final String method) {
+        try {
+            httpURLConnection.setRequestMethod(method); // Check whether we are running on a buggy JRE
+        } catch (final ProtocolException pe) {
+            try {
+                final Class<?> httpURLConnectionClass = httpURLConnection.getClass();
+				AccessController
+						.doPrivileged(new PrivilegedExceptionAction<Object>() {
+							public Object run() throws NoSuchFieldException,
+									IllegalAccessException {
+								try {
+									httpURLConnection.setRequestMethod(method);
+									// Check whether we are running on a buggy
+									// JRE
+								} catch (final ProtocolException pe) {
+									Class<?> connectionClass = httpURLConnection
+											.getClass();
+									Field delegateField;
+									try {
+										delegateField = connectionClass
+												.getDeclaredField("delegate");
+										delegateField.setAccessible(true);
+										HttpURLConnection delegateConnection = (HttpURLConnection) delegateField
+												.get(httpURLConnection);
+										setRequestMethodViaJreBugWorkaround(
+												delegateConnection, method);
+									} catch (NoSuchFieldException e) {
+										// Ignore for now, keep going
+									} catch (IllegalArgumentException e) {
+										throw new RuntimeException(e);
+									} catch (IllegalAccessException e) {
+										throw new RuntimeException(e);
+									}
+									try {
+										Field methodField;
+										while (connectionClass != null) {
+											try {
+												methodField = connectionClass
+														.getDeclaredField("method");
+											} catch (NoSuchFieldException e) {
+												connectionClass = connectionClass
+														.getSuperclass();
+												continue;
+											}
+											methodField.setAccessible(true);
+											methodField.set(httpURLConnection,
+													method);
+											break;
+										}
+									} catch (final Exception e) {
+										throw new RuntimeException(e);
+									}
+								}
+								return null;
+							}
+						});
+            } catch (final PrivilegedActionException e) {
+                final Throwable cause = e.getCause();
+                if (cause instanceof RuntimeException) {
+                    throw (RuntimeException) cause;
+                } else {
+                    throw new RuntimeException(cause);
+                }
+            }
+        }
+    }
+    
     public static String executePatch(String targetURL, String payload,
                                     Map<String, String> headers) {
         URL url;
@@ -265,7 +345,8 @@ public class HttpServices {
 
             connection = (HttpsURLConnection) url.openConnection(PROXY);
             connection.setRequestProperty("X-HTTP-Method-Override", "PATCH");
-            setRequestMethod(connection,"PATCH");
+            setRequestMethodViaJreBugWorkaround(connection, "PATCH");
+            //setRequestMethod(connection,"PATCH");
             connection.setRequestProperty("Content-Type", "application/json");
             for (String key : headers.keySet()) {
                 connection.setRequestProperty(key, headers.get(key));
@@ -275,8 +356,9 @@ public class HttpServices {
             connection.setDoOutput(true);
 
             // Send request
+            byte[] bytes = payload.getBytes("UTF-8"); // To support umlauts
             wr = new DataOutputStream(connection.getOutputStream());
-            wr.writeBytes(payload);
+            wr.write(bytes);
 
             if (200 == connection.getResponseCode()) {
                 InputStream is = connection.getInputStream();
@@ -324,25 +406,25 @@ public class HttpServices {
         }
         return exPostResponse;
     }
-    private static void setRequestMethod(final HttpURLConnection c, final String value) {
-        try {
-            final Object target;
-            if (c instanceof HttpsURLConnectionImpl) {
-                final Field delegate = HttpsURLConnectionImpl.class.getDeclaredField("delegate");
-                delegate.setAccessible(true);
-                target = delegate.get(c);
-            } else {
-                target = c;
-            }
-            final Field f = HttpURLConnection.class.getDeclaredField("method");
-            f.setAccessible(true);
-            f.set(target, value);
-        } catch (IllegalAccessException ex){
-            throw new AssertionError(ex);
-        } catch ( NoSuchFieldException ex){
-            throw new AssertionError(ex);
-        }
-    }
+//    private static void setRequestMethod(final HttpURLConnection c, final String value) {
+//        try {
+//            final Object target;
+//            if (c instanceof HttpsURLConnectionImpl) {
+//                final Field delegate = HttpsURLConnectionImpl.class.getDeclaredField("delegate");
+//                delegate.setAccessible(true);
+//                target = delegate.get(c);
+//            } else {
+//                target = c;
+//            }
+//            final Field f = HttpURLConnection.class.getDeclaredField("method");
+//            f.setAccessible(true);
+//            f.set(target, value);
+//        } catch (IllegalAccessException ex){
+//            throw new AssertionError(ex);
+//        } catch ( NoSuchFieldException ex){
+//            throw new AssertionError(ex);
+//        }
+//    }
     public static String executeGet(String targetURL, String urlParameters,
                                    Map<String, String> headers) {
         String exGetResponse = null;

@@ -968,7 +968,7 @@ public class ServiceUtil {
 
             LOGGER.trace("ASSET LASTMOD: " + asset_lastmod);
 
-            ValueMap thumbnail_map = thumb_rendition.getValueMap(); //RETURNED NULL EACH TIME
+            ValueMap thumbnail_map = thumb_rendition.getProperties(); //RETURNED NULL EACH TIME
 
 
             Date thumbnail_lastmod_time = thumbnail_map.get("jcr:lastModified", new Date(0));
@@ -1049,7 +1049,7 @@ public class ServiceUtil {
         Geo geo = null; //NOT SUPPORTED
 
         //TAGS
-        String[] tagsList = metadataRes.getValueMap().get("cq:tags",new String[]{});
+        String[] tagsList = map.get("cq:tags",new String[]{});
         List<String> list = new ArrayList<String>(Arrays.asList(tagsList));
         tagsList = list.toArray(new String[0]);
         //REMOVE BRIGHTCOVE TAG BEFORE PUSH

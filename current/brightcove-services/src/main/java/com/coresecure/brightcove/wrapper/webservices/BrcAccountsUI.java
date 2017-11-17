@@ -33,8 +33,8 @@
 
 package com.coresecure.brightcove.wrapper.webservices;
 
-import com.adobe.granite.ui.components.ds.DataSource;
-import com.adobe.granite.ui.components.ds.SimpleDataSource;
+//import com.adobe.granite.ui.components.ds.DataSource;
+//import com.adobe.granite.ui.components.ds.SimpleDataSource;
 import com.coresecure.brightcove.wrapper.sling.ConfigurationGrabber;
 import com.coresecure.brightcove.wrapper.sling.ConfigurationService;
 import com.coresecure.brightcove.wrapper.sling.ServiceUtil;
@@ -67,7 +67,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.HashMap;
 import org.apache.commons.collections.iterators.TransformIterator;
-import com.adobe.granite.ui.components.ds.ValueMapResource;
+//import com.adobe.granite.ui.components.ds.ValueMapResource;
 
 @Service
 @Component
@@ -155,7 +155,7 @@ public class BrcAccountsUI extends SlingAllMethodsServlet {
         }
 
 
-        DataSource ds = new SimpleDataSource(new TransformIterator(accountsList.iterator(), new Transformer() {
+/*        DataSource ds = new SimpleDataSource(new TransformIterator(accountsList.iterator(), new Transformer() {
             public Object transform(Object input) {
                 try {
                     JSONObject item = (JSONObject) input;
@@ -172,7 +172,7 @@ public class BrcAccountsUI extends SlingAllMethodsServlet {
             }
         }));
 
-        request.setAttribute(DataSource.class.getName(), ds);
+        request.setAttribute(DataSource.class.getName(), ds);*/
 
     }
 

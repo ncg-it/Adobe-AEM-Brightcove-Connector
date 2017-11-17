@@ -176,11 +176,6 @@
 
         <!-- Brightcove Services Bundle -->
 
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>brightcove-services</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
 
         <!-- CQ Product Dependencies-->

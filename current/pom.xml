@@ -62,7 +62,7 @@
             the following CQ connection properties are the default out-of-the-box CQ settings and are used by all modules in this project.
             you should override them in your local settings.xml file if your CQ environment is different.
         -->
-        <cq.host>127.0.0.1</cq.host>
+        <cq.host>localhost</cq.host>
         <cq.port>4502</cq.port>
         <cq.user>admin</cq.user>
         <cq.password>admin</cq.password>
@@ -157,7 +157,7 @@
             <dependency>
                 <groupId>com.cqblueprints</groupId>
                 <artifactId>cqdependencies</artifactId>
-                <version>5.6.0</version>
+                <version>5.6.1</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
@@ -212,21 +212,12 @@
                 <version>3.3.2</version>
                 <scope>provided</scope>
             </dependency>
-
-            <dependency>
-                <groupId>com.adobe.aem</groupId>
-                <artifactId>uber-jar</artifactId>
-                <version>6.2.0</version>
-                <classifier>obfuscated-apis</classifier>
-                <scope>provided</scope>
-            </dependency>
             <dependency>
                 <groupId>com.adobe.granite</groupId>
                 <artifactId>com.adobe.granite.xssprotection</artifactId>
                 <version>5.5.22</version>
                 <scope>provided</scope>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
 

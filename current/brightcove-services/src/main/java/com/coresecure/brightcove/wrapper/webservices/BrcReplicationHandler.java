@@ -182,12 +182,8 @@ public class BrcReplicationHandler implements TransportHandler {
                     LOGGER.debug("READY TO REPLICATE! RESOURCE IS A BRIGHTCOVE RESOURCE");
                     try {
 
-                        final Map<String, Object> authInfo = Collections.singletonMap(
-                                ResourceResolverFactory.SUBSERVICE,
-                                (Object) SERVICE_ACCOUNT_IDENTIFIER);
-
                         // Get the Service resource resolver
-                        ResourceResolver rr = resourceResolverFactory.getServiceResourceResolver(authInfo);
+                        ResourceResolver rr = resourceResolverFactory.getAdministrativeResourceResolver(null);
                         Resource asset_res;
                         for (String current_path : assetPaths) {
                             asset_res = rr.getResource(current_path);
@@ -227,7 +223,7 @@ public class BrcReplicationHandler implements TransportHandler {
                                     if (is_authorized) {
                                         Resource metadataRes = asset_res.getChild("jcr:content/metadata");
 
-                                        String[] tagsList = metadataRes.getValueMap().get("cq:tags", String[].class);
+                                        String[] tagsList = metadataRes.adaptTo(ValueMap.class).get("cq:tags", String[].class);
                                         Collection<String> tags = JcrUtil.tagsToCollection(tagsList);
 
                                         if (assetPaths != null && _asset != null && path.startsWith(cs.getAssetIntegrationPath())) {//isBrightcoveAsset(tags)) {
