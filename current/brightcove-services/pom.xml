@@ -287,6 +287,7 @@
                                     <password>${cq.password}</password>
                                     <usePut>true</usePut>
                                     <failOnError>true</failOnError>
+                                    <useProxy>false</useProxy>
                                 </configuration>
                             </execution>
                         </executions>

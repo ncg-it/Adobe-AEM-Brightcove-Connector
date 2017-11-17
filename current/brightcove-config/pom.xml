@@ -124,6 +124,7 @@
                                     <targetURL>http://${cq.host}:${cq.port}/crx/packmgr/service.jsp</targetURL>
                                     <userId>${cq.user}</userId>
                                     <password>${cq.password}</password>
+                                    <useProxy>false</useProxy>
                                 </configuration>
                             </execution>
                         </executions>
