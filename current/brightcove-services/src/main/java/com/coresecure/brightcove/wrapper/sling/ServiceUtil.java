@@ -1036,14 +1036,26 @@ public class ServiceUtil {
 
         //SCHEDULE
         SimpleDateFormat sdf = new SimpleDateFormat(ISO_8601_24H_FULL_FORMAT);
+        
+        Date onTime = assetMap.get("onTime", Date.class);
+        Date offTime  = assetMap.get("offTime", Date.class);
+        
+        String sched_start = null;
+        String sched_ends = null;
+        
+        if (onTime != null) {
+        	sched_start = sdf.format(onTime);
+        }
+        
+        if (offTime != null) {
+        	sched_ends = sdf.format(offTime);
+    	}
 
-        Date sched_start = assetMap.get("onTime", Date.class);
-        Date sched_ends  = assetMap.get("offTime", Date.class);
         Schedule schedule = null;
-        if(sched_start!=null || sched_ends != null)
+        
+        if(sched_start != null || sched_ends != null)
         {
-
-            schedule = new Schedule(sdf.format(sched_start), sdf.format(sched_ends) );
+            schedule = new Schedule(sched_start, sched_ends);
         }
 
         Geo geo = null; //NOT SUPPORTED
