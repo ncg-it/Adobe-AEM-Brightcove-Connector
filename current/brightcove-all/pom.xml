@@ -134,7 +134,7 @@
 
         <profile>
             <!--  Replace "auto-deploy" with sub-module specific profiles to allow them to be installed individually. -->
-            <id>auto-deploy-all</id>
+            <id>auto-deploy-all-author</id>
             <!--
                 when activated, this profile will deploy and install the built CQ package to the target server.
             -->
@@ -162,6 +162,36 @@
                 </plugins>
             </build>
         </profile>
+		<profile>
+            <!--  Replace "auto-deploy" with sub-module specific profiles to allow them to be installed individually. -->
+            <id>auto-deploy-all-publish</id>
+            <!--
+                when activated, this profile will deploy and install the built CQ package to the target server.
+            -->
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>com.day.jcr.vault</groupId>
+                        <artifactId>maven-vault-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>install-package</id>
+                                <goals>
+                                    <goal>install</goal>
+                                </goals>
+                                <configuration>
+                                    <packageFile>${project.build.directory}/${project.build.finalName}.zip</packageFile>
+                                    <targetURL>http://${cq.publish.host}:${cq.publish.port}/crx/packmgr/service.jsp</targetURL>
+                                    <userId>${cq.publish.user}</userId>
+                                    <password>${cq.publish.password}</password>
+                                    <useProxy>false</useProxy>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>        
     </profiles>
 
 

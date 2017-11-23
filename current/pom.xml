@@ -66,6 +66,10 @@
         <cq.port>4502</cq.port>
         <cq.user>admin</cq.user>
         <cq.password>admin</cq.password>
+        <cq.publish.host>localhost</cq.publish.host>
+        <cq.publish.port>4503</cq.publish.port>
+        <cq.publish.user>admin</cq.publish.user>
+        <cq.publish.password>admin</cq.publish.password>
     </properties>
 
     <scm>
